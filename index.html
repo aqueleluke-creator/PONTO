@@ -66,6 +66,30 @@
       text-transform: capitalize;
     }
 
+    .daily-summary {
+      background-color: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .summary-title {
+      font-size: 0.9rem;
+      color: #1e40af;
+      font-weight: 600;
+    }
+
+    .summary-hours {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      font-variant-numeric: tabular-nums;
+    }
+
     .input-group {
       margin-bottom: 20px;
     }
@@ -184,6 +208,12 @@
       <h2>Ponto Eletrônico</h2>
       <div class="clock" id="clock">00:00:00</div>
       <div class="date" id="date">--</div>
+
+      <!-- Resumo de Horas Trabalhadas no Dia -->
+      <div class="daily-summary">
+        <div class="summary-title">Total Trabalhado Hoje:</div>
+        <div class="summary-hours" id="totalToday">00h 00m</div>
+      </div>
     </div>
 
     <!-- Área de Registro -->
@@ -256,6 +286,7 @@
       const now = new Date();
       const record = {
         id: Date.now(),
+        timestamp: now.getTime(), // Salva o tempo em milissegundos para facilitar cálculos
         date: now.toLocaleDateString('pt-BR'),
         time: now.toLocaleTimeString('pt-BR'),
         name: name,
@@ -269,11 +300,60 @@
       renderRecords();
     }
 
-    // Renderizar tabela
+    // Cálculo das Horas Trabalhadas
+    function calculateDailyHours(dateString) {
+      const records = getStoredRecords().filter(r => r.date === dateString);
+      
+      // Ordena os registros do mais antigo para o mais recente para calcular na ordem certa
+      const sorted = records.sort((a, b) => a.timestamp - b.timestamp);
+
+      let totalMs = 0;
+      let lastEntrada = null;
+      let lastRetorno = null;
+
+      sorted.forEach(rec => {
+        if (rec.type === 'Entrada') {
+          lastEntrada = rec.timestamp;
+        } else if (rec.type === 'Início Pausa' && lastEntrada) {
+          totalMs += (rec.timestamp - lastEntrada);
+          lastEntrada = null; // Reseta após fechar o período
+        } else if (rec.type === 'Retorno Pausa') {
+          lastRetorno = rec.timestamp;
+        } else if (rec.type === 'Saída') {
+          if (lastRetorno) {
+            totalMs += (rec.timestamp - lastRetorno);
+            lastRetorno = null;
+          } else if (lastEntrada) {
+            totalMs += (rec.timestamp - lastEntrada);
+            lastEntrada = null;
+          }
+        }
+      });
+
+      // Se a pessoa deu entrada ou retorno mas ainda não registrou a saída/pausa, conta até o horário atual
+      const now = Date.now();
+      if (lastEntrada) {
+        totalMs += (now - lastEntrada);
+      } else if (lastRetorno) {
+        totalMs += (now - lastRetorno);
+      }
+
+      const totalMinutes = Math.floor(totalMs / (1000 * 60));
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+
+      return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`;
+    }
+
+    // Renderizar tabela e atualizar o total diário
     function renderRecords() {
       const records = getStoredRecords();
       const tbody = document.getElementById('recordsBody');
       const emptyMsg = document.getElementById('emptyMessage');
+      const todayStr = new Date().toLocaleDateString('pt-BR');
+
+      // Atualiza o contador de horas de hoje
+      document.getElementById('totalToday').textContent = calculateDailyHours(todayStr);
 
       tbody.innerHTML = '';
 
@@ -302,7 +382,13 @@
       });
     }
 
-    // Exportar para arquivo CSV
+    // Recalcula o tempo a cada minuto para manter o relógio diário atualizado em tempo real
+    setInterval(() => {
+      const todayStr = new Date().toLocaleDateString('pt-BR');
+      document.getElementById('totalToday').textContent = calculateDailyHours(todayStr);
+    }, 60000);
+
+    // Exportar para arquivo CSV (inclui timestamp)
     function exportToCSV() {
       const records = getStoredRecords();
       if (records.length === 0) {
