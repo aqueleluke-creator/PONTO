@@ -2,262 +2,80 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ponto Eletrônico</title>
-
   <style>
     :root {
       --primary: #2563eb;
-      --bg: #f1f5f9;
-      --card-bg: #ffffff;
+      --bg: #f8fafc;
+      --card: #ffffff;
       --text: #0f172a;
-      --text-muted: #64748b;
       --border: #e2e8f0;
-      --success: #16a34a;
-      --warning: #d97706;
-      --info: #0284c7;
-      --danger: #dc2626;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      display: flex;
-      justify-content: center;
-      padding: 16px;
-      min-height: 100vh;
-      align-items: center;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 440px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      border: 1px solid var(--border);
-    }
-
-    .header-clock {
-      text-align: center;
-    }
-
-    .header-clock h2 {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
-
-    .clock {
-      font-size: 2.8rem;
-      font-weight: 800;
-      color: var(--primary);
-      margin: 6px 0;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .date {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      text-transform: capitalize;
-    }
-
-    .input-group {
-      margin-bottom: 16px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-      color: var(--text-muted);
-    }
-
-    input {
-      width: 100%;
-      padding: 14px;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      font-size: 1rem;
-      outline: none;
-      background-color: #f8fafc;
-      transition: all 0.2s;
-    }
-
-    input:focus {
-      border-color: var(--primary);
-      background-color: #fff;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
-
-    .buttons-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .btn-ponto {
-      padding: 18px 12px;
-      border: none;
-      border-radius: 14px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      transition: transform 0.1s, opacity 0.2s;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-    }
-
-    .btn-ponto:active {
-      transform: scale(0.96);
-    }
-
-    .btn-ponto:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-entrada { background-color: var(--success); }
-    .btn-pausa { background-color: var(--warning); }
-    .btn-retorno { background-color: var(--info); }
-    .btn-saida { background-color: var(--danger); }
-
-    .status-msg {
-      margin-top: 14px;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      text-align: center;
-      display: none;
-    }
-
-    .status-success { background-color: #dcfce7; color: #166534; }
-    .status-error { background-color: #fee2e2; color: #991b1b; }
-    .status-loading { background-color: #e0f2fe; color: #075985; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, sans-serif; }
+    body { background: var(--bg); color: var(--text); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 16px; }
+    .container { width: 100%; max-width: 400px; background: var(--card); padding: 24px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); border: 1px solid var(--border); }
+    .clock-box { text-align: center; margin-bottom: 20px; }
+    .clock { font-size: 2.5rem; font-weight: 800; color: var(--primary); }
+    .date { color: #64748b; font-size: 0.9rem; margin-top: 4px; }
+    .field { margin-bottom: 16px; }
+    label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: #475569; }
+    input { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; outline: none; }
+    input:focus { border-color: var(--primary); }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+    button { padding: 14px; border: none; border-radius: 8px; font-weight: 700; color: white; cursor: pointer; transition: opacity 0.2s; }
+    button:hover { opacity: 0.9; }
+    .btn-e1 { background: #16a34a; }
+    .btn-s1 { background: #d97706; }
+    .btn-e2 { background: #0284c7; }
+    .btn-s2 { background: #dc2626; }
   </style>
 </head>
 <body>
 
   <div class="container">
-    <div class="card header-clock">
-      <h2>Ponto Eletrônico</h2>
+    <div class="clock-box">
       <div class="clock" id="clock">00:00:00</div>
-      <div class="date" id="date">--</div>
+      <div class="date" id="date">--/--/----</div>
     </div>
 
-    <div class="card">
-      <div class="input-group">
-        <label for="employeeName">Nome ou Matrícula</label>
-        <input type="text" id="employeeName" placeholder="Digite seu nome ou ID">
+    <!-- Formulário que envia direto para o Google Apps Script sem travar CORS -->
+    <form id="pontoForm" action="" method="POST">
+      <div class="field">
+        <label for="name">Nome ou Matrícula:</label>
+        <input type="text" id="name" name="name" placeholder="Digite seu nome" required>
       </div>
 
-      <div class="buttons-grid">
-        <button class="btn-ponto btn-entrada" onclick="registerPoint('Entrada')">1ª Entrada</button>
-        <button class="btn-ponto btn-pausa" onclick="registerPoint('Início Pausa')">Saída Pausa</button>
-        <button class="btn-ponto btn-retorno" onclick="registerPoint('Retorno Pausa')">Retorno Pausa</button>
-        <button class="btn-ponto btn-saida" onclick="registerPoint('Saída')">Saída Final</button>
-      </div>
+      <!-- Campo oculto para mandar o tipo de batida -->
+      <input type="hidden" id="type" name="type" value="Entrada">
 
-      <div id="statusMsg" class="status-msg"></div>
-    </div>
+      <div class="grid">
+        <button type="submit" class="btn-e1" onclick="setType('Entrada 1')">1ª Entrada</button>
+        <button type="submit" class="btn-s1" onclick="setType('Saída Pausa')">Saída Pausa</button>
+        <button type="submit" class="btn-e2" onclick="setType('Retorno Pausa')">Retorno Pausa</button>
+        <button type="submit" class="btn-s2" onclick="setType('Saída Final')">Saída Final</button>
+      </div>
+    </form>
   </div>
 
   <script>
+    // Cole aqui a URL completa gerada ao implantar o Apps Script
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2dU8XNJiDj-6DG1nmIJ043L8ZQaWgQv7kX3I19mak5hEqEdgKD18Uht2xqm8RsGca/exec";
+
+    document.getElementById('pontoForm').action = GOOGLE_SCRIPT_URL;
+
+    function setType(val) {
+      document.getElementById('type').value = val;
+    }
 
     function updateClock() {
       const now = new Date();
       document.getElementById('clock').textContent = now.toLocaleTimeString('pt-BR');
-      const dateOptions = { weekday: 'short', day: '2-digit', month: 'short', year: '2-digit' };
-      document.getElementById('date').textContent = now.toLocaleDateString('pt-BR', dateOptions);
+      document.getElementById('date').textContent = now.toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
     }
     setInterval(updateClock, 1000);
     updateClock();
-
-    async function registerPoint(type) {
-      const nameInput = document.getElementById('employeeName');
-      const name = nameInput.value.trim();
-
-      if (!name) {
-        showStatus('Por favor, informe seu nome ou matrícula.', 'error');
-        return;
-      }
-
-      setButtonsDisabled(true);
-      showStatus('Enviando registro para a planilha...', 'loading', false);
-
-      const now = new Date();
-      const payload = {
-        date: now.toLocaleDateString('pt-BR'),
-        time: now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
-        name: name,
-        type: type
-      };
-
-      try {
-        await fetch(GOOGLE_SCRIPT_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(payload)
-        });
-
-        showStatus(`Ponto enviado com sucesso! (${type})`, 'success');
-      } catch (error) {
-        console.error('Erro na requisição:', error);
-        showStatus('Erro ao conectar. Verifique a conexão com a internet.', 'error');
-      } finally {
-        setButtonsDisabled(false);
-      }
-    }
-
-    function showStatus(text, type, autoHide = true) {
-      const msgEl = document.getElementById('statusMsg');
-      msgEl.textContent = text;
-      
-      msgEl.className = 'status-msg ';
-      if (type === 'success') msgEl.classList.add('status-success');
-      else if (type === 'error') msgEl.classList.add('status-error');
-      else if (type === 'loading') msgEl.classList.add('status-loading');
-
-      msgEl.style.display = 'block';
-
-      if (autoHide) {
-        setTimeout(() => {
-          msgEl.style.display = 'none';
-        }, 4000);
-      }
-    }
-
-    function setButtonsDisabled(disabled) {
-      const buttons = document.querySelectorAll('.btn-ponto');
-      buttons.forEach(btn => btn.disabled = disabled);
-    }
   </script>
 </body>
 </html>
