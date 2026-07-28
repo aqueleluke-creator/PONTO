@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ponto Eletrônico - Espelho Coletivo</title>
+  <title>Ponto Eletrônico</title>
 
   <style>
     :root {
@@ -188,7 +188,6 @@
   </div>
 
   <script>
-    // URL do seu Web App no Google Apps Script
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz2dU8XNJiDj-6DG1nmIJ043L8ZQaWgQv7kX3I19mak5hEqEdgKD18Uht2xqm8RsGca/exec";
 
     // --- 1. RELÓGIO EM TEMPO REAL ---
@@ -212,34 +211,28 @@
       }
 
       setButtonsDisabled(true);
-      showStatus('Gravando registro na planilha...', 'loading', false);
+      showStatus('Enviando registro para a planilha...', 'loading', false);
 
       const now = new Date();
       const payload = {
-        date: now.toLocaleDateString('pt-BR'), // Formato: DD/MM/AA
-        time: now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }), // Formato: HH:MM
+        date: now.toLocaleDateString('pt-BR'), // Formato Ex: 28/07/26
+        time: now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }), // Formato Ex: 12:30
         name: name,
         type: type
       };
 
       try {
-        const response = await fetch(GOOGLE_SCRIPT_URL, {
+        await fetch(GOOGLE_SCRIPT_URL, {
           method: 'POST',
-          mode: 'cors',
+          mode: 'no-cors',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify(payload)
         });
 
-        const result = await response.json();
-
-        if (result.result === 'success') {
-          showStatus(`Ponto de ${type} registrado com sucesso!`, 'success');
-        } else {
-          showStatus('Erro ao gravar: ' + (result.message || 'Verifique a planilha.'), 'error');
-        }
+        showStatus(`Ponto enviado com sucesso! (${type})`, 'success');
       } catch (error) {
         console.error('Erro na requisição:', error);
-        showStatus('Erro ao conectar com o servidor. Verifique a internet.', 'error');
+        showStatus('Erro ao conectar. Verifique a conexão com a internet.', 'error');
       } finally {
         setButtonsDisabled(false);
       }
