@@ -28,23 +28,23 @@
       color: var(--text);
       display: flex;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
       min-height: 100vh;
     }
 
     .container {
       width: 100%;
-      max-width: 700px;
+      max-width: 650px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 16px;
     }
 
     .card {
       background: var(--card-bg);
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
       border: 1px solid var(--border);
     }
 
@@ -53,15 +53,15 @@
     }
 
     .clock {
-      font-size: 2.8rem;
+      font-size: 2.5rem;
       font-weight: 700;
       color: var(--primary);
-      margin: 10px 0;
+      margin: 6px 0;
       font-variant-numeric: tabular-nums;
     }
 
     .date {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: #64748b;
       text-transform: capitalize;
     }
@@ -69,9 +69,9 @@
     .daily-summary {
       background-color: #eff6ff;
       border: 1px solid #bfdbfe;
-      border-radius: 8px;
-      padding: 16px;
-      margin-top: 15px;
+      border-radius: 12px;
+      padding: 14px 18px;
+      margin-top: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -84,19 +84,19 @@
     }
 
     .summary-hours {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: #1e3a8a;
       font-variant-numeric: tabular-nums;
     }
 
     .input-group {
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     label {
       display: block;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 600;
       margin-bottom: 6px;
       color: #475569;
@@ -104,9 +104,9 @@
 
     input {
       width: 100%;
-      padding: 10px 14px;
+      padding: 12px 14px;
       border: 1px solid var(--border);
-      border-radius: 8px;
+      border-radius: 10px;
       font-size: 1rem;
       outline: none;
       transition: border-color 0.2s;
@@ -116,49 +116,65 @@
       border-color: var(--primary);
     }
 
+    /* Grid de Botões Adaptável */
     .buttons-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
     }
 
     button {
-      padding: 12px;
+      padding: 14px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       font-weight: 600;
       font-size: 0.95rem;
       cursor: pointer;
       color: white;
       transition: opacity 0.2s, transform 0.1s;
+      width: 100%;
     }
 
     button:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
     }
 
     .btn-entrada { background-color: var(--success); }
     .btn-pausa { background-color: var(--warning); }
     .btn-retorno { background-color: #0284c7; }
     .btn-saida { background-color: var(--danger); }
-    
+
     .actions-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 15px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .actions-btns {
+      display: flex;
+      gap: 8px;
     }
 
     .btn-secondary {
       background-color: #64748b;
       font-size: 0.85rem;
       padding: 8px 12px;
+      width: auto;
     }
 
     .btn-clear {
       background-color: #ef4444;
       font-size: 0.85rem;
       padding: 8px 12px;
+      width: auto;
     }
 
     table {
@@ -169,7 +185,7 @@
     }
 
     th, td {
-      padding: 10px 12px;
+      padding: 12px;
       border-bottom: 1px solid var(--border);
     }
 
@@ -182,10 +198,11 @@
     .badge {
       display: inline-block;
       padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
       font-weight: 600;
       color: white;
+      text-align: center;
     }
 
     .badge-entrada { background-color: var(--success); }
@@ -198,6 +215,57 @@
       color: #94a3b8;
       padding: 20px 0;
     }
+
+    /* ESTILOS ESPECÍFICOS PARA MOBILE */
+    @media (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      .clock {
+        font-size: 2.2rem;
+      }
+
+      .buttons-grid {
+        grid-template-columns: 1fr; /* Um botão por linha no celular para facilitar o toque */
+      }
+
+      /* Transforma a tabela em lista de cards no Mobile */
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+
+      thead {
+        display: none; /* Esconde o cabeçalho no mobile */
+      }
+
+      tr {
+        margin-bottom: 12px;
+        background: #f8fafc;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px;
+      }
+
+      td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border-bottom: 1px dashed var(--border);
+      }
+
+      td:last-child {
+        border-bottom: none;
+      }
+
+      td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #64748b;
+        font-size: 0.8rem;
+      }
+    }
   </style>
 </head>
 <body>
@@ -209,9 +277,9 @@
       <div class="clock" id="clock">00:00:00</div>
       <div class="date" id="date">--</div>
 
-      <!-- Resumo de Horas Trabalhadas no Dia -->
+      <!-- Resumo de Horas Trabalhadas -->
       <div class="daily-summary">
-        <div class="summary-title">Total Trabalhado Hoje:</div>
+        <div class="summary-title">Trabalhado Hoje:</div>
         <div class="summary-hours" id="totalToday">00h 00m</div>
       </div>
     </div>
@@ -219,24 +287,24 @@
     <!-- Área de Registro -->
     <div class="card">
       <div class="input-group">
-        <label for="employeeName">Nome do Colaborador</label>
-        <input type="text" id="employeeName" placeholder="Digite seu nome ou ID">
+        <label for="employeeName">Nome ou Matrícula</label>
+        <input type="text" id="employeeName" placeholder="Ex: Maria Silva - 1024">
       </div>
 
       <div class="buttons-grid">
-        <button class="btn-entrada" onclick="registerPoint('Entrada')">Entrada</button>
-        <button class="btn-pausa" onclick="registerPoint('Início Pausa')">Pausa</button>
-        <button class="btn-retorno" onclick="registerPoint('Retorno Pausa')">Retorno</button>
-        <button class="btn-saida" onclick="registerPoint('Saída')">Saída</button>
+        <button class="btn-entrada" id="btn-Entrada" onclick="registerPoint('Entrada')">Entrada</button>
+        <button class="btn-pausa" id="btn-Início Pausa" onclick="registerPoint('Início Pausa')">Pausa</button>
+        <button class="btn-retorno" id="btn-Retorno Pausa" onclick="registerPoint('Retorno Pausa')">Retorno</button>
+        <button class="btn-saida" id="btn-Saída" onclick="registerPoint('Saída')">Saída</button>
       </div>
     </div>
 
-    <!-- Tabela de Histórico -->
+    <!-- Tabela / Cards de Histórico -->
     <div class="card">
       <div class="actions-bar">
-        <h3>Histórico de Registros</h3>
-        <div>
-          <button class="btn-secondary" onclick="exportToCSV()">Exportar CSV</button>
+        <h3>Registros</h3>
+        <div class="actions-btns">
+          <button class="btn-secondary" onclick="exportToCSV()">Exportar</button>
           <button class="btn-clear" onclick="clearHistory()">Limpar</button>
         </div>
       </div>
@@ -251,42 +319,37 @@
           </tr>
         </thead>
         <tbody id="recordsBody">
-          <!-- Registros renderizados via JavaScript -->
+          <!-- Registros carregados via JS -->
         </tbody>
       </table>
-      <div id="emptyMessage" class="empty-msg">Nenhum ponto registrado até o momento.</div>
+      <div id="emptyMessage" class="empty-msg">Nenhum ponto registrado.</div>
     </div>
   </div>
 
   <script>
-    // Atualização do Relógio
     function updateClock() {
       const now = new Date();
-      const timeStr = now.toLocaleTimeString('pt-BR');
-      const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-      const dateStr = now.toLocaleDateString('pt-BR', dateOptions);
-
-      document.getElementById('clock').textContent = timeStr;
-      document.getElementById('date').textContent = dateStr;
+      document.getElementById('clock').textContent = now.toLocaleTimeString('pt-BR');
+      
+      const dateOptions = { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' };
+      document.getElementById('date').textContent = now.toLocaleDateString('pt-BR', dateOptions);
     }
     setInterval(updateClock, 1000);
     updateClock();
 
-    // Carregar registros salvos
     function getStoredRecords() {
       const data = localStorage.getItem('ponto_registros');
       return data ? JSON.parse(data) : [];
     }
 
-    // Registrar ponto
     function registerPoint(type) {
       const nameInput = document.getElementById('employeeName');
-      const name = nameInput.value.trim() || 'Não Identificado';
+      const name = nameInput.value.trim() || 'Colaborador Sem Nome';
       
       const now = new Date();
       const record = {
         id: Date.now(),
-        timestamp: now.getTime(), // Salva o tempo em milissegundos para facilitar cálculos
+        timestamp: now.getTime(),
         date: now.toLocaleDateString('pt-BR'),
         time: now.toLocaleTimeString('pt-BR'),
         name: name,
@@ -294,17 +357,14 @@
       };
 
       const records = getStoredRecords();
-      records.unshift(record); // Adiciona no início da lista
+      records.unshift(record);
       localStorage.setItem('ponto_registros', JSON.stringify(records));
 
       renderRecords();
     }
 
-    // Cálculo das Horas Trabalhadas
     function calculateDailyHours(dateString) {
       const records = getStoredRecords().filter(r => r.date === dateString);
-      
-      // Ordena os registros do mais antigo para o mais recente para calcular na ordem certa
       const sorted = records.sort((a, b) => a.timestamp - b.timestamp);
 
       let totalMs = 0;
@@ -312,14 +372,12 @@
       let lastRetorno = null;
 
       sorted.forEach(rec => {
-        if (rec.type === 'Entrada') {
-          lastEntrada = rec.timestamp;
-        } else if (rec.type === 'Início Pausa' && lastEntrada) {
+        if (rec.type === 'Entrada') lastEntrada = rec.timestamp;
+        else if (rec.type === 'Início Pausa' && lastEntrada) {
           totalMs += (rec.timestamp - lastEntrada);
-          lastEntrada = null; // Reseta após fechar o período
-        } else if (rec.type === 'Retorno Pausa') {
-          lastRetorno = rec.timestamp;
-        } else if (rec.type === 'Saída') {
+          lastEntrada = null;
+        } else if (rec.type === 'Retorno Pausa') lastRetorno = rec.timestamp;
+        else if (rec.type === 'Saída') {
           if (lastRetorno) {
             totalMs += (rec.timestamp - lastRetorno);
             lastRetorno = null;
@@ -330,13 +388,9 @@
         }
       });
 
-      // Se a pessoa deu entrada ou retorno mas ainda não registrou a saída/pausa, conta até o horário atual
       const now = Date.now();
-      if (lastEntrada) {
-        totalMs += (now - lastEntrada);
-      } else if (lastRetorno) {
-        totalMs += (now - lastRetorno);
-      }
+      if (lastEntrada) totalMs += (now - lastEntrada);
+      if (lastRetorno) totalMs += (now - lastRetorno);
 
       const totalMinutes = Math.floor(totalMs / (1000 * 60));
       const hours = Math.floor(totalMinutes / 60);
@@ -345,14 +399,12 @@
       return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`;
     }
 
-    // Renderizar tabela e atualizar o total diário
     function renderRecords() {
       const records = getStoredRecords();
       const tbody = document.getElementById('recordsBody');
       const emptyMsg = document.getElementById('emptyMessage');
       const todayStr = new Date().toLocaleDateString('pt-BR');
 
-      // Atualiza o contador de horas de hoje
       document.getElementById('totalToday').textContent = calculateDailyHours(todayStr);
 
       tbody.innerHTML = '';
@@ -373,22 +425,20 @@
         if (rec.type === 'Saída') badgeClass = 'badge-saida';
 
         tr.innerHTML = `
-          <td>${rec.date}</td>
-          <td>${rec.time}</td>
-          <td>${rec.name}</td>
-          <td><span class="badge ${badgeClass}">${rec.type}</span></td>
+          <td data-label="Data">${rec.date}</td>
+          <td data-label="Hora">${rec.time}</td>
+          <td data-label="Nome">${rec.name}</td>
+          <td data-label="Tipo"><span class="badge ${badgeClass}">${rec.type}</span></td>
         `;
         tbody.appendChild(tr);
       });
     }
 
-    // Recalcula o tempo a cada minuto para manter o relógio diário atualizado em tempo real
     setInterval(() => {
       const todayStr = new Date().toLocaleDateString('pt-BR');
       document.getElementById('totalToday').textContent = calculateDailyHours(todayStr);
-    }, 60000);
+    }, 30000);
 
-    // Exportar para arquivo CSV (inclui timestamp)
     function exportToCSV() {
       const records = getStoredRecords();
       if (records.length === 0) {
@@ -396,21 +446,21 @@
         return;
       }
 
-      let csvContent = 'data:text/csv;charset=utf-8,Data;Hora;Nome;Tipo\n';
+      let csvContent = '\uFEFFData;Hora;Nome;Tipo\n'; // \uFEFF força codificação UTF-8 no Excel
       records.forEach(r => {
         csvContent += `${r.date};${r.time};${r.name};${r.type}\n`;
       });
 
-      const encodedUri = encodeURI(csvContent);
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
-      link.setAttribute('href', encodedUri);
+      link.setAttribute('href', url);
       link.setAttribute('download', `ponto_eletronico_${new Date().toISOString().slice(0,10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }
 
-    // Limpar histórico
     function clearHistory() {
       if (confirm('Tem certeza que deseja apagar todo o histórico de pontos?')) {
         localStorage.removeItem('ponto_registros');
@@ -418,6 +468,10 @@
       }
     }
 
+    renderRecords();
+  </script>
+</body>
+</html>
     // Inicialização
     renderRecords();
   </script>
