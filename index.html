@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Ponto Eletrônico (IndexedDB)</title>
+  <title>Ponto Eletrônico</title>
 
   <style>
     :root {
@@ -38,7 +38,7 @@
 
     .container {
       width: 100%;
-      max-width: 500px;
+      max-width: 480px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -77,30 +77,6 @@
       font-size: 0.85rem;
       color: var(--text-muted);
       text-transform: capitalize;
-    }
-
-    .daily-summary {
-      background-color: #eff6ff;
-      border: 1px solid #bfdbfe;
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-top: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .summary-title {
-      font-size: 0.85rem;
-      color: #1e40af;
-      font-weight: 600;
-    }
-
-    .summary-hours {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: #1e3a8a;
-      font-variant-numeric: tabular-nums;
     }
 
     .input-group {
@@ -149,11 +125,16 @@
       align-items: center;
       justify-content: center;
       gap: 4px;
-      transition: transform 0.1s;
+      transition: transform 0.1s, opacity 0.2s;
     }
 
     .btn-ponto:active {
       transform: scale(0.96);
+    }
+
+    .btn-ponto:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
     .btn-entrada { background-color: var(--success); }
@@ -161,103 +142,17 @@
     .btn-retorno { background-color: var(--info); }
     .btn-saida { background-color: var(--danger); }
 
-    .actions-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-
-    .actions-bar h3 {
-      font-size: 1rem;
-      font-weight: 700;
-    }
-
-    .actions-btns {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-sm {
-      padding: 6px 10px;
-      border: none;
+    .status-msg {
+      margin-top: 10px;
+      padding: 10px;
       border-radius: 8px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .btn-secondary { background-color: #e2e8f0; color: #334155; }
-    .btn-clear { background-color: #fee2e2; color: #dc2626; }
-
-    .history-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 350px;
-      overflow-y: auto;
-    }
-
-    .history-card {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px;
-      background: #f8fafc;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-    }
-
-    .history-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .history-name {
       font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text);
-    }
-
-    .history-date {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-    }
-
-    .history-right {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .history-time {
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--text);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .badge {
-      padding: 4px 8px;
-      border-radius: 6px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: white;
-      text-transform: uppercase;
-    }
-
-    .badge-entrada { background-color: var(--success); }
-    .badge-pausa { background-color: var(--warning); }
-    .badge-retorno { background-color: var(--info); }
-    .badge-saida { background-color: var(--danger); }
-
-    .empty-msg {
       text-align: center;
-      color: var(--text-muted);
-      padding: 20px 0;
-      font-size: 0.85rem;
+      display: none;
     }
+
+    .status-success { background-color: #dcfce7; color: #166534; }
+    .status-error { background-color: #fee2e2; color: #991b1b; }
   </style>
 </head>
 <body>
@@ -267,106 +162,29 @@
       <h2>Ponto Eletrônico</h2>
       <div class="clock" id="clock">00:00:00</div>
       <div class="date" id="date">--</div>
-
-      <div class="daily-summary">
-        <span class="summary-title">Total Hoje</span>
-        <span class="summary-hours" id="totalToday">00h 00m</span>
-      </div>
     </div>
 
     <div class="card">
       <div class="input-group">
-        <label for="employeeName">Nome ou Matrícula</label>
+        <label for="employeeName">Nome / Matrícula</label>
         <input type="text" id="employeeName" placeholder="Ex: João Souza">
       </div>
 
       <div class="buttons-grid">
-        <button class="btn-ponto btn-entrada" onclick="registerPoint('Entrada')">Entrada</button>
-        <button class="btn-ponto btn-pausa" onclick="registerPoint('Início Pausa')">Pausa</button>
-        <button class="btn-ponto btn-retorno" onclick="registerPoint('Retorno Pausa')">Retorno</button>
-        <button class="btn-ponto btn-saida" onclick="registerPoint('Saída')">Saída</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="actions-bar">
-        <h3>Histórico Persistente</h3>
-        <div class="actions-btns">
-          <button class="btn-sm btn-secondary" onclick="exportToCSV()">Exportar</button>
-          <button class="btn-sm btn-clear" onclick="clearHistory()">Limpar</button>
-        </div>
+        <button class="btn-ponto btn-entrada" onclick="registerPoint('Entrada')">1ª Entrada</button>
+        <button class="btn-ponto btn-pausa" onclick="registerPoint('Início Pausa')">Saída Pausa</button>
+        <button class="btn-ponto btn-retorno" onclick="registerPoint('Retorno Pausa')">Retorno Pausa</button>
+        <button class="btn-ponto btn-saida" onclick="registerPoint('Saída')">Saída Final</button>
       </div>
 
-      <div id="historyList" class="history-list"></div>
-      <div id="emptyMessage" class="empty-msg">Nenhum registro encontrado.</div>
+      <div id="statusMsg" class="status-msg"></div>
     </div>
   </div>
 
   <script>
-    // --- 1. GERENCIAMENTO DE BANCO DE DADOS NATIVO (IndexedDB) ---
-    const DB_NAME = "PontoEletronicoDB";
-    const DB_VERSION = 1;
-    const STORE_NAME = "registros";
-    let db;
+    // URL gerada na implantação do Google Apps Script
+    const https://script.google.com/macros/s/AKfycbz2dU8XNJiDj-6DG1nmIJ043L8ZQaWgQv7kX3I19mak5hEqEdgKD18Uht2xqm8RsGca/exec = "COLE_SUA_URL_AQUI";
 
-    function initDB() {
-      return new Promise((resolve, reject) => {
-        const request = indexedDB.open(DB_NAME, DB_VERSION);
-
-        request.onupgradeneeded = (event) => {
-          const database = event.target.result;
-          if (!database.objectStoreNames.contains(STORE_NAME)) {
-            // Cria a tabela com id auto-incrementável
-            database.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
-          }
-        };
-
-        request.onsuccess = (event) => {
-          db = event.target.result;
-          resolve(db);
-        };
-
-        request.onerror = (event) => {
-          console.error("Erro ao abrir IndexedDB:", event.target.error);
-          reject(event.target.error);
-        };
-      });
-    }
-
-    async function addRecord(record) {
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], "readwrite");
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.add(record);
-
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => reject(e.target.error);
-      });
-    }
-
-    async function getAllRecords() {
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], "readonly");
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.getAll();
-
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = (e) => reject(e.target.error);
-      });
-    }
-
-    async function clearAllRecords() {
-      return new Promise((resolve, reject) => {
-        const transaction = db.transaction([STORE_NAME], "readwrite");
-        const store = transaction.objectStore(STORE_NAME);
-        const request = store.clear();
-
-        request.onsuccess = () => resolve();
-        request.onerror = (e) => reject(e.target.error);
-      });
-    }
-
-    // --- 2. RELÓGIO ---
     function updateClock() {
       const now = new Date();
       document.getElementById('clock').textContent = now.toLocaleTimeString('pt-BR');
@@ -376,140 +194,65 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    // --- 3. REGISTRAR PONTO ---
     async function registerPoint(type) {
       const nameInput = document.getElementById('employeeName');
-      const name = nameInput.value.trim() || 'Colaborador';
-      
+      const name = nameInput.value.trim();
+
+      if (!name) {
+        showStatus('Por favor, preencha o Nome ou Matrícula.', false);
+        return;
+      }
+
+      if (https://script.google.com/macros/s/AKfycbz2dU8XNJiDj-6DG1nmIJ043L8ZQaWgQv7kX3I19mak5hEqEdgKD18Uht2xqm8RsGca/exec === "COLE_SUA_URL_AQUI") {
+        showStatus('Insira a URL do Google Apps Script no código HTML.', false);
+        return;
+      }
+
+      setButtonsDisabled(true);
+      showStatus('Registrando no espelho de ponto...', true, false);
+
       const now = new Date();
-      const record = {
-        timestamp: now.getTime(),
-        date: now.toLocaleDateString('pt-BR'),
-        time: now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      const payload = {
+        date: now.toLocaleDateString('pt-BR'), // Ex: 01/07/26
+        time: now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }), // Ex: 08:00
         name: name,
         type: type
       };
 
-      await addRecord(record);
-      renderRecords();
-    }
+      try {
+        await fetch(https://script.google.com/macros/s/AKfycbz2dU8XNJiDj-6DG1nmIJ043L8ZQaWgQv7kX3I19mak5hEqEdgKD18Uht2xqm8RsGca/exec, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
 
-    // --- 4. CÁLCULO DE HORAS ---
-    function calculateDailyHours(records, dateString) {
-      const recordsToday = records.filter(r => r.date === dateString);
-      const sorted = recordsToday.sort((a, b) => a.timestamp - b.timestamp);
-
-      let totalMs = 0;
-      let lastEntrada = null;
-      let lastRetorno = null;
-
-      sorted.forEach(rec => {
-        if (rec.type === 'Entrada') lastEntrada = rec.timestamp;
-        else if (rec.type === 'Início Pausa' && lastEntrada) {
-          totalMs += (rec.timestamp - lastEntrada);
-          lastEntrada = null;
-        } else if (rec.type === 'Retorno Pausa') lastRetorno = rec.timestamp;
-        else if (rec.type === 'Saída') {
-          if (lastRetorno) {
-            totalMs += (rec.timestamp - lastRetorno);
-            lastRetorno = null;
-          } else if (lastEntrada) {
-            totalMs += (rec.timestamp - lastEntrada);
-            lastEntrada = null;
-          }
-        }
-      });
-
-      const now = Date.now();
-      if (lastEntrada) totalMs += (now - lastEntrada);
-      if (lastRetorno) totalMs += (now - lastRetorno);
-
-      const totalMinutes = Math.floor(totalMs / (1000 * 60));
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-
-      return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`;
-    }
-
-    // --- 5. RENDERIZAÇÃO ---
-    async function renderRecords() {
-      const allRecords = await getAllRecords();
-      // Ordena do mais recente para o mais antigo
-      allRecords.sort((a, b) => b.timestamp - a.timestamp);
-
-      const historyList = document.getElementById('historyList');
-      const emptyMsg = document.getElementById('emptyMessage');
-      const todayStr = new Date().toLocaleDateString('pt-BR');
-
-      document.getElementById('totalToday').textContent = calculateDailyHours(allRecords, todayStr);
-
-      historyList.innerHTML = '';
-
-      if (allRecords.length === 0) {
-        emptyMsg.style.display = 'block';
-        return;
-      }
-
-      emptyMsg.style.display = 'none';
-
-      allRecords.forEach(rec => {
-        let badgeClass = 'badge-entrada';
-        if (rec.type === 'Início Pausa') badgeClass = 'badge-pausa';
-        if (rec.type === 'Retorno Pausa') badgeClass = 'badge-retorno';
-        if (rec.type === 'Saída') badgeClass = 'badge-saida';
-
-        const item = document.createElement('div');
-        item.className = 'history-card';
-        item.innerHTML = `
-          <div class="history-info">
-            <span class="history-name">${rec.name}</span>
-            <span class="history-date">${rec.date}</span>
-          </div>
-          <div class="history-right">
-            <span class="history-time">${rec.time}</span>
-            <span class="badge ${badgeClass}">${rec.type}</span>
-          </div>
-        `;
-        historyList.appendChild(item);
-      });
-    }
-
-    // --- 6. EXPORTAR CSV ---
-    async function exportToCSV() {
-      const records = await getAllRecords();
-      if (records.length === 0) {
-        alert('Nenhum registro para exportar.');
-        return;
-      }
-
-      records.sort((a, b) => a.timestamp - b.timestamp);
-
-      let csvContent = '\uFEFFData;Hora;Nome;Tipo\n';
-      records.forEach(r => {
-        csvContent += `${r.date};${r.time};${r.name};${r.type}\n`;
-      });
-
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', `ponto_historico_${new Date().toISOString().slice(0,10)}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    async function clearHistory() {
-      if (confirm('Deseja apagar todo o histórico gravado no banco de dados local?')) {
-        await clearAllRecords();
-        renderRecords();
+        showStatus(`Ponto de ${type} registrado com sucesso!`, true);
+      } catch (error) {
+        console.error('Erro ao enviar:', error);
+        showStatus('Erro de conexão ao salvar registro.', false);
+      } finally {
+        setButtonsDisabled(false);
       }
     }
 
-    // Inicializa o banco de dados e carrega a tela
-    initDB().then(() => {
-      renderRecords();
-    });
+    function showStatus(text, isSuccess, autoHide = true) {
+      const msgEl = document.getElementById('statusMsg');
+      msgEl.textContent = text;
+      msgEl.className = 'status-msg ' + (isSuccess ? 'status-success' : 'status-error');
+      msgEl.style.display = 'block';
+
+      if (autoHide) {
+        setTimeout(() => {
+          msgEl.style.display = 'none';
+        }, 4000);
+      }
+    }
+
+    function setButtonsDisabled(disabled) {
+      const buttons = document.querySelectorAll('.btn-ponto');
+      buttons.forEach(btn => btn.disabled = disabled);
+    }
   </script>
 </body>
 </html>
